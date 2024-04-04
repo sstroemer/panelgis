@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "panelgis"
+version = "0.1.0"
+description = ""
+authors = ["sstroemer <stefan.stroemer@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+folium = "^0.16.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
