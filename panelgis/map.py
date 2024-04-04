@@ -1,0 +1,128 @@
+import folium
+import folium.plugins
+import numpy as np
+import panel as pn
+
+
+class Layer:
+    _levels = None
+
+    def __init__(self, **kwargs):
+        for level in Layer._levels:
+            setattr(self, level, kwargs.get(level, None))
+    
+    def to_str(self, compact: bool = False):
+        if compact:
+            return ", ".join([getattr(self, level) for level in Layer._levels if getattr(self, level)])
+
+        return "\n".join([f"{level}: {getattr(self, level)}" for level in Layer._levels if getattr(self, level)])
+    
+    def __str__(self) -> str:
+        return self.to_str(True)
+    
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Layer):
+            return False
+        for level in Layer._levels:
+            if getattr(self, level) != getattr(other, level):
+                return False
+        return True
+    
+    def __hash__(self) -> int:
+        return hash(tuple([getattr(self, level) for level in Layer._levels]))
+    
+    @classmethod
+    def initialize(cls, levels: list[str]):
+        if cls._levels is not None:
+            raise ValueError("Layers already initialized")
+        cls._levels = levels
+
+
+class FeatureMap:
+    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None):
+        self.features = features
+
+        self.select_tiles = select_tiles
+        if self.select_tiles:
+            self.select_tiles.param.watch(self.cb_update, "value")
+        self.select_source = select_source
+        if self.select_source:
+            self.select_source.param.watch(self.cb_update, "value")
+
+        self._backgrounds = {}
+        self.select_background = select_background
+        if self.select_background:
+            self.select_background.param.watch(self.cb_update, "value")
+
+        self._borders = {}
+        self.select_border = select_border
+        if self.select_border:
+            self.select_border.param.watch(self.cb_update, "value")
+
+        self._make_folium_map()
+        self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
+
+        self.is_feature_active = is_feature_active
+
+    def _make_folium_map(self, **kwargs):
+        self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=False)
+        f_tile_sources = {
+            "none": "",
+            "blank": folium.utilities.image_to_url(np.array([[1, 1], [1, 1]])),
+            "CartoDB (light)": folium.TileLayer("cartodbpositron").tiles,
+            "CartoDB (dark)": "cartodbdark_matter",
+            "OSM": folium.TileLayer("OpenStreetMap").tiles,
+        }
+
+        folium.TileLayer(f_tile_sources[self.select_tiles.value], attr="Internal Preview").add_to(self.folium_map)
+
+        bg = self.select_background.value
+        if bg is not None:
+            if bg in self._backgrounds and self._backgrounds[bg] is not None:
+                self._backgrounds[bg].add_to(self.folium_map)
+
+        border = self.select_border.value
+        if border is not None:
+            if border in self._borders and self._borders[border] is not None:
+                self._borders[border].add_to(self.folium_map)
+
+        folium.plugins.Fullscreen(                                                         
+                position                = "topright",                                   
+                title                   = "Open in Fullscreen",                       
+                title_cancel            = "Close Fullscreen",                      
+                force_separate_button   = True,                                         
+        ).add_to(self.folium_map)
+
+        self.folium_map.fit_bounds([[46.33, 9.44], [49.03, 17.17]], padding_top_left=(20, 20), padding_bottom_right=(20, 20))
+
+        return self.folium_map
+
+    def _add_a_to_b(self, a, b):
+        self.folium_map.add_child(
+            folium.elements.ElementAddToElement(
+                element_name=a.get_name(),
+                element_parent_name=b.get_name(),
+            ),
+            name=a.get_name() + "_add_" + b.get_name(),
+        )
+
+    def _add_folium_features(self):
+        for f in self.features:
+            if not self.is_feature_active(f):
+                continue
+            
+            f.add_to(self.folium_map)
+
+    def _update_map(self):
+        self._make_folium_map()
+        self._add_folium_features()
+        self.pane.object = self.folium_map
+
+    def cb_update(self, event):
+        self._update_map()
+
+    def register_background(self, name, element):
+        self._backgrounds[name] = element
+    
+    def register_border(self, name, element):
+        self._borders[name] = element
