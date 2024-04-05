@@ -36,7 +36,7 @@ class Layer:
         return hash(tuple(getattr(self, level) for level in Layer.levels))
     
     @classmethod
-    def levels(cls)
+    def levels(cls):
         return sorted(cls._levels)
 
 
