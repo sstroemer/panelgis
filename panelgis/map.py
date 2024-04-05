@@ -70,10 +70,10 @@ class FeatureMap:
         if self.select_border:
             self.select_border.param.watch(self.cb_update, "value")
 
+        self.is_feature_active = is_feature_active
+
         self._make_folium_map()
         self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
-
-        self.is_feature_active = is_feature_active
 
     def _make_folium_map(self, **kwargs):
         self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=False)
