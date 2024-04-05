@@ -26,9 +26,9 @@ class Layer:
     
     def to_str(self, compact: bool = False):
         if compact:
-            return ", ".join(str(getattr(self, level)) for level in Layer.levels if getattr(self, level))
+            return ", ".join(str(getattr(self, level)) for level in Layer.levels() if getattr(self, level))
 
-        return "\n".join(f"{level}: {getattr(self, level)}" for level in Layer.levels if getattr(self, level))
+        return "\n".join(f"{level}: {getattr(self, level)}" for level in Layer.levels() if getattr(self, level))
     
     def __str__(self) -> str:
         return self.to_str(True)
@@ -42,9 +42,7 @@ class Layer:
         return True
     
     def __hash__(self) -> int:
-        print(Layer.levels)
-        print([str(getattr(self, level)) for level in Layer.levels])
-        return hash(tuple([str(getattr(self, level)) for level in Layer.levels]))
+        return hash(tuple(str(getattr(self, level)) for level in Layer.levels()))
     
     @classmethod
     def levels(cls):
