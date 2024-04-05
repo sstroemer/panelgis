@@ -114,9 +114,12 @@ class Feature:
 
 
 class FeatureCollection:
-    def __init__(self, features: list[Feature] | None = None):
+    def __init__(self, features = None):
         if features:
-            self._features = features
+            if isinstance(features, list):
+                self._features = features
+            else:
+                self._features = list(features)
         else:
             self._features = []
 
