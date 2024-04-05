@@ -42,7 +42,7 @@ class Layer:
         return True
     
     def __hash__(self) -> int:
-        return hash(tuple(getattr(self, level) for level in Layer.levels))
+        return hash(tuple([getattr(self, level) for level in Layer.levels]))
     
     @classmethod
     def levels(cls):
