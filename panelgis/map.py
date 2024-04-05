@@ -12,12 +12,16 @@ class Layer:
             setattr(self, f"_level_{k}", v)
             Layer._levels.add(k)
     
-    def __getattr__(self, name):
-        level_name = f"_level_{name}"
+    def __getattr__(self, attr: str):
+        if attr.startswith('__') and attr.endswith('__'):
+            raise AttributeError
+        
+        if attr.startswith("_"):
+            raise AttributeError
 
+        level_name = f"_level_{name}"
         if level_name in self.__dict__:
             return self.__dict__[level_name]
-
         return None
     
     def to_str(self, compact: bool = False):
