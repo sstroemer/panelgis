@@ -6,8 +6,18 @@ authors = ["sstroemer <stefan.stroemer@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 folium = "^0.16.0"
+panel = "^1.4.0"
+watchfiles = "^0.21.0"
+jupyter-bokeh = "^4.0.1"
+ipykernel = "^6.29.4"
+bokeh = "^3.4.0"
+shapely = "^2.0.3"
+geopandas = "^0.14.3"
+nbconvert = "^7.16.3"
+moviepy = "^1.0.3"
+
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
