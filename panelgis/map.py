@@ -19,7 +19,7 @@ class Layer:
         if attr.startswith("_"):
             raise AttributeError
 
-        level_name = f"_level_{name}"
+        level_name = f"_level_{attr}"
         if level_name in self.__dict__:
             return self.__dict__[level_name]
         return None
