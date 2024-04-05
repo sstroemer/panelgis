@@ -13,7 +13,9 @@ class Layer:
             Layer._levels.add(k)
     
     def __getattr__(self, name):
-        return getattr(self, f"_level_{name}", None)
+        if hasattr(self, f"_level_{name}"):
+            return getattr(self, f"_level_{name}")
+        return None
     
     def to_str(self, compact: bool = False):
         if compact:
