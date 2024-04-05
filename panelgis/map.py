@@ -5,17 +5,21 @@ import panel as pn
 
 
 class Layer:
-    _levels = None
+    _levels = set()
 
     def __init__(self, **kwargs):
-        for level in Layer._levels:
-            setattr(self, level, kwargs.get(level, None))
+        for (k, v) in kwargs.items():
+            setattr(self, f"_level_{k}", v)
+            Layer._levels.add(k)
+    
+    def __getattr__(self, name):
+        return getattr(self, f"_level_{name}", None)
     
     def to_str(self, compact: bool = False):
         if compact:
-            return ", ".join([getattr(self, level) for level in Layer._levels if getattr(self, level)])
+            return ", ".join(str(getattr(self, level)) for level in Layer.levels if getattr(self, level))
 
-        return "\n".join([f"{level}: {getattr(self, level)}" for level in Layer._levels if getattr(self, level)])
+        return "\n".join(f"{level}: {getattr(self, level)}" for level in Layer.levels if getattr(self, level))
     
     def __str__(self) -> str:
         return self.to_str(True)
@@ -29,13 +33,11 @@ class Layer:
         return True
     
     def __hash__(self) -> int:
-        return hash(tuple([getattr(self, level) for level in Layer._levels]))
+        return hash(tuple(getattr(self, level) for level in Layer.levels))
     
     @classmethod
-    def initialize(cls, levels: list[str]):
-        if cls._levels is not None:
-            raise ValueError("Layers already initialized")
-        cls._levels = levels
+    def levels(cls)
+        return sorted(cls._levels)
 
 
 class FeatureMap:
