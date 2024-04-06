@@ -91,7 +91,7 @@ class FeatureMap:
             sources = f"| Public data from: ({sources})"
         attribution = self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
 
-        folium.TileLayer(f_tiles[self.select_tiles.value], attr=attribution).add_to(self.folium_map)
+        folium.TileLayer(f_tiles[self.select_tiles.value].tiles, attr=attribution).add_to(self.folium_map)
 
         bg = self.select_background.value
         if bg is not None:
