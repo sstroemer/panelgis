@@ -88,7 +88,7 @@ class FeatureMap:
 
         sources = ", ".join(self.select_source.value)
         if len(sources) > 0:
-            sources = f"| Data Sources: {[str(it).upper() for it in sources]}"
+            sources = f"Data Sources: {[str(it).upper() for it in sources]}"
         attribution = self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
 
         folium.TileLayer(f_tiles[self.select_tiles.value].tiles, attr=attribution).add_to(self.folium_map)
