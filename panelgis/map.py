@@ -77,7 +77,7 @@ class FeatureMap:
         self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
 
     def _make_folium_map(self, **kwargs):
-        self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=False)
+        self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=True)
         f_tiles = {
             "none": folium.TileLayer("", attr=" "),
             "blank": folium.TileLayer(folium.utilities.image_to_url(np.array([[1, 1], [1, 1]])), attr=" "),
@@ -88,7 +88,7 @@ class FeatureMap:
 
         sources = ", ".join(self.select_source.value)
         if len(sources) > 0:
-            sources = f"| Public data from: ({sources})"
+            sources = f"| Data Sources: {[str(it).upper() for it in sources]}"
         attribution = self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
 
         folium.TileLayer(f_tiles[self.select_tiles.value].tiles, attr=attribution).add_to(self.folium_map)
