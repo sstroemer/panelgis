@@ -74,7 +74,11 @@ class FeatureMap:
         self.is_feature_active = is_feature_active
 
         self._make_folium_map()
-        self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
+
+        if height == "stretch":
+            self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", sizing_mode="stretch_height", width=width)
+        else:
+            self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
 
     def _make_folium_map(self, **kwargs):
         self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=True)
