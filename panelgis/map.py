@@ -50,7 +50,7 @@ class Layer:
 
 
 class FeatureMap:
-    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None, custom_attribution="PanelGIS by S. Strömer"):
+    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None, sizing_mode=None, custom_attribution="PanelGIS by S. Strömer"):
         self.features = features
         self._custom_attribution = custom_attribution
 
@@ -74,11 +74,7 @@ class FeatureMap:
         self.is_feature_active = is_feature_active
 
         self._make_folium_map()
-
-        if height == "stretch":
-            self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", sizing_mode="stretch_height", width=width)
-        else:
-            self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width)
+        self.pane = pn.pane.plot.Folium(self.folium_map, name="folium_map_pane", height=height, width=width, sizing_mode=sizing_mode)
 
     def _make_folium_map(self, **kwargs):
         self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=True)
