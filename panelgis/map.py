@@ -86,12 +86,16 @@ class FeatureMap:
             "OSM": folium.TileLayer("OpenStreetMap"),
         }
 
-        sources = ", ".join(self.select_source.value)
-        if len(sources) > 0:
-            sources = f"Data Sources: {[str(it).upper() for it in sources]}"
-        attribution = self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
+        if len(self.select_source.value) > 0:
+            sources = ", ".join(str(it).upper() for it in self.select_source.value)
+            sources = f"Data Sources: {[]}"
+        else:
+            sources = ""
 
-        folium.TileLayer(f_tiles[self.select_tiles.value].tiles, attr=attribution).add_to(self.folium_map)
+        folium.TileLayer(
+            f_tiles[self.select_tiles.value].tiles,
+            attr=self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
+        ).add_to(self.folium_map)
 
         bg = self.select_background.value
         if bg is not None:
