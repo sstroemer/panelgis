@@ -87,8 +87,7 @@ class FeatureMap:
         }
 
         if len(self.select_source.value) > 0:
-            sources = ", ".join(str(it).upper() for it in self.select_source.value)
-            sources = f"Data Sources: {[]}"
+            sources = "Data Sources: " + ", ".join(str(it).upper() for it in self.select_source.value)
         else:
             sources = ""
 
