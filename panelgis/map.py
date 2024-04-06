@@ -50,8 +50,9 @@ class Layer:
 
 
 class FeatureMap:
-    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None):
+    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None, custom_attribution="PanelGIS by S. Strömer"):
         self.features = features
+        self._custom_attribution = custom_attribution
 
         self.select_tiles = select_tiles
         if self.select_tiles:
@@ -77,15 +78,20 @@ class FeatureMap:
 
     def _make_folium_map(self, **kwargs):
         self.folium_map = folium.Map(tiles=None, zoom_delta=0.25, zoom_snap=0, prefer_canvas=False)
-        f_tile_sources = {
-            "none": "",
-            "blank": folium.utilities.image_to_url(np.array([[1, 1], [1, 1]])),
-            "CartoDB (light)": folium.TileLayer("cartodbpositron").tiles,
-            "CartoDB (dark)": "cartodbdark_matter",
-            "OSM": folium.TileLayer("OpenStreetMap").tiles,
+        f_tiles = {
+            "none": folium.TileLayer("", attr=" "),
+            "blank": folium.TileLayer(folium.utilities.image_to_url(np.array([[1, 1], [1, 1]])), attr=" "),
+            "CartoDB (light)": folium.TileLayer("cartodbpositron"),
+            "CartoDB (dark)": folium.TileLayer("cartodbdark_matter"),
+            "OSM": folium.TileLayer("OpenStreetMap"),
         }
 
-        folium.TileLayer(f_tile_sources[self.select_tiles.value], attr="Internal Preview").add_to(self.folium_map)
+        sources = ", ".join(self.select_source.value)
+        if len(sources) > 0:
+            sources = f"| Public data from: ({sources})"
+        attribution = self._custom_attribution + f_tiles[self.select_tiles.value].options["attribution"] + sources
+
+        folium.TileLayer(f_tiles[self.select_tiles.value], attr=attribution).add_to(self.folium_map)
 
         bg = self.select_background.value
         if bg is not None:
