@@ -50,9 +50,10 @@ class Layer:
 
 
 class FeatureMap:
-    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None, sizing_mode=None, custom_attribution="PanelGIS by S. Strömer"):
+    def __init__(self, features, select_tiles, select_source, select_background=None, select_border=None, is_feature_active=None, height=None, width=None, sizing_mode=None, custom_attribution="PanelGIS by S. Strömer", allow_draw=False):
         self.features = features
         self._custom_attribution = custom_attribution
+        self._allow_draw = allow_draw
 
         self.select_tiles = select_tiles
         if self.select_tiles:
@@ -112,6 +113,9 @@ class FeatureMap:
                 title_cancel            = "Close Fullscreen",                      
                 force_separate_button   = True,                                         
         ).add_to(self.folium_map)
+
+        if self._allow_draw:
+            folium.plugins.Draw(export=True).add_to(self.folium_map)
 
         self.folium_map.fit_bounds([[46.33, 9.44], [49.03, 17.17]], padding_top_left=(20, 20), padding_bottom_right=(20, 20))
 
