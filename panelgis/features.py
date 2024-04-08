@@ -4,6 +4,7 @@ import folium
 import shapely
 
 from .sources import SourceInfo
+from .map import Layer
 
 
 class Feature:
@@ -17,7 +18,7 @@ class Feature:
         source: str | dict,
         location: tuple | None = None,
         geojson: dict | None = None,
-        layer: str | tuple | None = None,
+        layer: Layer = None,
         properties: dict | None = None,
         reduce_to_centroid: bool = False,
     ):
