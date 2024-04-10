@@ -62,8 +62,8 @@ class Feature:
         if properties:
             if self.geojson:
                 for k, v in properties.items():
-                    if k in self.geojson["properties"]:
-                        raise ValueError(f"Property ({k}) already exists in GeoJSON")
+                    # if k in self.geojson["properties"]:
+                    #     raise ValueError(f"Property ({k}) already exists in GeoJSON")
                     self.geojson["properties"][k] = v
             else:
                 self.geojson = {
